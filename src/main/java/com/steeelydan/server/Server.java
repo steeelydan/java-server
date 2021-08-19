@@ -29,8 +29,7 @@ public class Server {
             ServerListenerThread serverListenerThread = new ServerListenerThread(configuration.getPort(), configuration.getWebroot());
             serverListenerThread.start();
         } catch(IOException e) {
-            e.printStackTrace();
-            // TODO
+            LOGGER.error("Error creating ServerListenerThread", e);
         }
     }
 }

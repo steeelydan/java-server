@@ -25,11 +25,11 @@ public class HttpConnectionWorkerThread extends Thread {
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
 
-            int _byte;
+            // int _byte;
 
-            while ((_byte = inputStream.read()) >= 0) {
-                System.out.print((char) _byte);
-            }
+            // while ((_byte = inputStream.read()) >= 0) {
+            //     System.out.print((char) _byte);
+            // }
 
             String html = "<html><head><title>My Site</title></head><body><h1>This page was created using a simple Java Server</h1></body></html>";
 

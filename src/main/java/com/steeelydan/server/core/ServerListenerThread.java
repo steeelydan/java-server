@@ -49,6 +49,11 @@ public class ServerListenerThread extends Thread {
                 inputStream.close();
                 outputStream.close();
                 socket.close();
+                try {
+                    sleep(5000);
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             // serverSocket.close(); // TODO handle later
         } catch (IOException e) {

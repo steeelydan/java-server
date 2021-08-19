@@ -24,31 +24,33 @@ public class ServerListenerThread extends Thread {
     @Override
     public void run() {
         try {
-            Socket socket = serverSocket.accept();
+            while (serverSocket.isBound() && !serverSocket.isClosed()) {
+                Socket socket = serverSocket.accept();
 
-            LOGGER.info(" * Connection accepted: " + socket.getInetAddress());
+                LOGGER.info(" * Connection accepted: " + socket.getInetAddress());
 
-            InputStream inputStream = socket.getInputStream();
-            OutputStream outputStream = socket.getOutputStream();
+                InputStream inputStream = socket.getInputStream();
+                OutputStream outputStream = socket.getOutputStream();
 
-            String html = "<html><head><title>My Site</title></head><body><h1>This page was created using a simple Java Server</h1></body></html>";
+                String html = "<html><head><title>My Site</title></head><body><h1>This page was created using a simple Java Server</h1></body></html>";
 
-            final String CRLF = "\r\n"; // 13, 10
+                final String CRLF = "\r\n"; // 13, 10
 
-            String response = "HTTP/1.1 200 OK" + CRLF + // Status line: HTTP_VERSION RESPONSE_CODE RESPONSE_MESSAGE
-                    "Content-Length: " + html.getBytes().length + CRLF + CRLF + // Headers
-                    html + CRLF + CRLF;
+                String response = "HTTP/1.1 200 OK" + CRLF + // Status line: HTTP_VERSION RESPONSE_CODE RESPONSE_MESSAGE
+                        "Content-Length: " + html.getBytes().length + CRLF + CRLF + // Headers
+                        html + CRLF + CRLF;
 
-            byte[] responseInBytes = response.getBytes();
+                byte[] responseInBytes = response.getBytes();
 
-            LOGGER.info(response);
+                LOGGER.info(response);
 
-            outputStream.write(responseInBytes);
+                outputStream.write(responseInBytes);
 
-            inputStream.close();
-            outputStream.close();
-            socket.close();
-            serverSocket.close();
+                inputStream.close();
+                outputStream.close();
+                socket.close();
+            }
+            // serverSocket.close(); // TODO handle later
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -4,7 +4,10 @@
 
 -   JDK 11+
 -   Maven
+-   For auto rebuild: `inotify-tools`
 
 ## Start
 
-`sh ./run.sh`
+`./run.sh`
+
+Watch: `./watch.sh`

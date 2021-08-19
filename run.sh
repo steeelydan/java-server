@@ -1,2 +1,2 @@
-mvn compile &&
-mvn exec:java -Dexec.mainClass=com.steeelydan.server.Server
+mvn compile \
+&& mvn exec:java -Dexec.mainClass=com.steeelydan.server.Server

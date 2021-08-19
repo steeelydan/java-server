@@ -23,5 +23,15 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <artifactId>jackson-databind</artifactId>
             <version>2.12.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.32</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.5</version>
+        </dependency>
     </dependencies>
 </project>

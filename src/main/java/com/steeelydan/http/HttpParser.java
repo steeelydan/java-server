@@ -22,7 +22,12 @@ public class HttpParser {
                                                                                                   // stream
 
         HttpRequest request = new HttpRequest();
-        parseRequestLine(reader, request);
+        try {
+            parseRequestLine(reader, request);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         parseHeaders(reader, request);
         parseBody(reader, request);
 
@@ -30,13 +35,23 @@ public class HttpParser {
     }
 
     private void parseRequestLine(InputStreamReader reader, HttpRequest request) throws IOException {
-        int readerChar;
-        while ((readerChar = reader.read()) >= 0) {
-            if (readerChar == CR) {
-                readerChar = reader.read();
-                if (readerChar == LF) {
+        StringBuilder processingDataBuffer = new StringBuilder();
+
+        int _byte;
+        while ((_byte = reader.read()) >= 0) {
+            if (_byte == CR) {
+                _byte = reader.read();
+                if (_byte == LF) {
+                    LOGGER.debug("Request Line to Process: {}", processingDataBuffer.toString());
+
                     return;
                 }
+            }
+
+            if (_byte == SP) {
+                // Todo: process previous data
+            } else {
+                processingDataBuffer.append((char) _byte);
             }
         }
     }

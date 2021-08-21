@@ -1,5 +1,8 @@
 .DS_Store
-target/
+bin/
+.gradle/
+gradle/
+build/
 log/
 .classpath
 .settings

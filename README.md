@@ -3,13 +3,10 @@
 ## Requirements
 
 -   JDK 11+
--   Maven
--   For auto rebuild: `inotify-tools`
+-   Gradle 7+ (https://gradle.org/install/)
 
 ## Start
 
-`./run.sh`
+Run app: `./gradlew run`
 
-Watch: `./watch.sh`
-
-Test: `mvn test`
+Test: `./gradlew test`

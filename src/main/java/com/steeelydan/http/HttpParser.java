@@ -49,7 +49,8 @@ public class HttpParser {
             }
 
             if (_byte == SP) {
-                // Todo: process previous data
+                LOGGER.debug("Request Line to Process : {}", processingDataBuffer.toString());
+                processingDataBuffer.delete(0, processingDataBuffer.length());
             } else {
                 processingDataBuffer.append((char) _byte);
             }

@@ -43,6 +43,49 @@ public class HttpParserTest {
 		}
     }
 
+    @Test
+    void parseHttpRequestTooLongMethod() {
+        try {
+            httpParser.parseHttpRequest(generateTooLongMethodGETTestCase());
+            fail();
+        } catch (HttpParsingException e) {
+            assertEquals(e.getErrorCode(), HttpStatusCode.SERVER_ERROR_501_NOT_IMPLEMENTED);
+        }
+    }
+
+    @Test
+    void parseHttpRequestTooManyItems() {
+        try {
+            httpParser.parseHttpRequest(generateTooManyItemsGETTestCase());
+            fail();
+        } catch (HttpParsingException e) {
+            e.printStackTrace();
+            assertEquals(e.getErrorCode(), HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
+        }
+    }
+
+    @Test
+    void parseHttpRequestEmptyRequestLine() {
+        try {
+            httpParser.parseHttpRequest(generateEmptyRequestLineGETTestCase());
+            fail();
+        } catch (HttpParsingException e) {
+            e.printStackTrace();
+            assertEquals(e.getErrorCode(), HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
+        }
+    }
+
+    @Test
+    void parseHttpRequestNoLineFeed() {
+        try {
+            httpParser.parseHttpRequest(generateNoLineFeedGETTestCase());
+            fail();
+        } catch (HttpParsingException e) {
+            e.printStackTrace();
+            assertEquals(e.getErrorCode(), HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
+        }
+    }
+
     private InputStream generateValidGETTestCase() {
         String rawData = "GET / HTTP/1.1\r\n" + "Host: localhost:8080\r\n"
                 + "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\n"
@@ -59,6 +102,46 @@ public class HttpParserTest {
 
     private InputStream generateInvalidGETTestCase() {
         String rawData = "GeT / HTTP/1.1\r\n" + "Host: localhost:8080\r\n"
+                + "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\n"
+                + "Cache-Control: max-age=0\r\n" + "\r\n";
+
+        InputStream inputStream = new ByteArrayInputStream(rawData.getBytes(StandardCharsets.US_ASCII));
+
+        return inputStream;
+    }
+
+    private InputStream generateTooLongMethodGETTestCase() {
+        String rawData = "GETTTTT / HTTP/1.1\r\n" + "Host: localhost:8080\r\n"
+                + "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\n"
+                + "Cache-Control: max-age=0\r\n" + "\r\n";
+
+        InputStream inputStream = new ByteArrayInputStream(rawData.getBytes(StandardCharsets.US_ASCII));
+
+        return inputStream;
+    }
+
+    private InputStream generateTooManyItemsGETTestCase() {
+        String rawData = "GET / AAAAAAAA HTTP/1.1\r\n" + "Host: localhost:8080\r\n"
+                + "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\n"
+                + "Cache-Control: max-age=0\r\n" + "\r\n";
+
+        InputStream inputStream = new ByteArrayInputStream(rawData.getBytes(StandardCharsets.US_ASCII));
+
+        return inputStream;
+    }
+
+    private InputStream generateEmptyRequestLineGETTestCase() {
+        String rawData = "\r\n" + "Host: localhost:8080\r\n"
+                + "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\n"
+                + "Cache-Control: max-age=0\r\n" + "\r\n";
+
+        InputStream inputStream = new ByteArrayInputStream(rawData.getBytes(StandardCharsets.US_ASCII));
+
+        return inputStream;
+    }
+
+    private InputStream generateNoLineFeedGETTestCase() {
+        String rawData = "GET / HTTP/1.1\r" + "Host: localhost:8080\r\n"
                 + "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\n"
                 + "Cache-Control: max-age=0\r\n" + "\r\n";
 

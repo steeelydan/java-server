@@ -17,7 +17,7 @@ public class HttpParser {
     private static final int LF = 0x0A; // 10
 
     // Not static: design choice; usable in every thread with different config!
-    public HttpRequest parseHttpRequest(InputStream inputStream) {
+    public HttpRequest parseHttpRequest(InputStream inputStream) throws HttpParsingException {
         InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.US_ASCII); // byte stream -> char
                                                                                                   // stream
 
@@ -34,7 +34,7 @@ public class HttpParser {
         return request;
     }
 
-    private void parseRequestLine(InputStreamReader reader, HttpRequest request) throws IOException {
+    private void parseRequestLine(InputStreamReader reader, HttpRequest request) throws IOException, HttpParsingException {
         StringBuilder processingDataBuffer = new StringBuilder();
 
         boolean methodParsed = false;

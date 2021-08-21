@@ -1,5 +1,7 @@
 package com.steeelydan.http;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +22,10 @@ public class HttpParserTest {
 
     @Test
     void parseHttpRequest() {
-        httpParser.parseHttpRequest(generateValidTestCase());
+        HttpRequest request = httpParser.parseHttpRequest(generateValidTestCase());
+
+        System.out.println(HttpMethod.GET);
+        assertEquals(request.getMethod(), HttpMethod.GET);
     }
 
     private InputStream generateValidTestCase() {

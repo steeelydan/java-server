@@ -37,6 +37,9 @@ public class HttpParser {
     private void parseRequestLine(InputStreamReader reader, HttpRequest request) throws IOException {
         StringBuilder processingDataBuffer = new StringBuilder();
 
+        boolean methodParsed = false;
+        boolean requestTargetParsed = false;
+
         int _byte;
         while ((_byte = reader.read()) >= 0) {
             if (_byte == CR) {
@@ -49,7 +52,15 @@ public class HttpParser {
             }
 
             if (_byte == SP) {
-                LOGGER.debug("Request Line to Process : {}", processingDataBuffer.toString());
+                if (!methodParsed) {
+                    LOGGER.debug("Request Line METHOD to Process : {}", processingDataBuffer.toString());
+                    request.setMethod(processingDataBuffer.toString());
+                    methodParsed = true;
+                } else if (!requestTargetParsed) {
+                    LOGGER.debug("Request Line REQ TARGET to Process : {}", processingDataBuffer.toString());
+                    requestTargetParsed = true;
+                }
+
                 processingDataBuffer.delete(0, processingDataBuffer.length());
             } else {
                 processingDataBuffer.append((char) _byte);

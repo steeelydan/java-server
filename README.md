@@ -11,3 +11,5 @@
 `./run.sh`
 
 Watch: `./watch.sh`
+
+Test: `mvn test`

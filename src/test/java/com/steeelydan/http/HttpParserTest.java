@@ -28,8 +28,10 @@ public class HttpParserTest {
         try {
             request = httpParser.parseHttpRequest(generateValidGETTestCase());
             assertNotNull(request);
-            assertEquals(request.getMethod(), HttpMethod.GET);
-            assertEquals(request.getRequestTarget(), "/");
+            assertEquals(HttpMethod.GET, request.getMethod());
+            assertEquals("/", request.getRequestTarget());
+            assertEquals("HTTP/1.1", request.getOriginalHttpVersion());
+            assertEquals(HttpVersion.HTTP_1_1, request.getHttpVersion());
         } catch (HttpParsingException e) {
             fail();
         }
@@ -91,7 +93,7 @@ public class HttpParserTest {
     @Test
     void parseHttpRequestBadHttpVersion() {
         try {
-            httpParser.parseHttpRequest(generateBadHttpVersion());
+            httpParser.parseHttpRequest(generateBadHttpVersionTestCase());
             fail();
         } catch (HttpParsingException e) {
             assertEquals(HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST, e.getErrorCode());
@@ -102,10 +104,24 @@ public class HttpParserTest {
     @Test
     void parseHttpRequestUnsupportedHttpVersion() {
         try {
-            httpParser.parseHttpRequest(generateUnsupportedHttpVersion());
+            httpParser.parseHttpRequest(generateUnsupportedHttpVersionTestCase());
             fail();
         } catch (HttpParsingException e) {
             assertEquals(HttpStatusCode.SERVER_ERROR_505_HTTP_VERSION_NOT_SUPPORTED, e.getErrorCode());
+        }
+    }
+
+    @Test
+    void parseHttpRequestHigherHttpVersion() {
+        HttpRequest request = null;
+
+        try {
+            request = httpParser.parseHttpRequest(generateSupportedHttpVersionTestCase());
+            assertNotNull(request);
+            assertEquals("HTTP/1.2", request.getOriginalHttpVersion());
+            assertEquals(HttpVersion.HTTP_1_1, request.getHttpVersion());
+        } catch (HttpParsingException e) {
+            fail();
         }
     }
 
@@ -173,7 +189,7 @@ public class HttpParserTest {
         return inputStream;
     }
 
-    private InputStream generateBadHttpVersion() {
+    private InputStream generateBadHttpVersionTestCase() {
         String rawData = "GET / HTP/7.1\r\n" + "Host: localhost:8080\r\n"
                 + "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\n"
                 + "Cache-Control: max-age=0\r\n" + "\r\n";
@@ -183,8 +199,18 @@ public class HttpParserTest {
         return inputStream;
     }
 
-    private InputStream generateUnsupportedHttpVersion() {
+    private InputStream generateUnsupportedHttpVersionTestCase() {
         String rawData = "GET / HTTP/2.1\r\n" + "Host: localhost:8080\r\n"
+                + "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\n"
+                + "Cache-Control: max-age=0\r\n" + "\r\n";
+
+        InputStream inputStream = new ByteArrayInputStream(rawData.getBytes(StandardCharsets.US_ASCII));
+
+        return inputStream;
+    }
+
+    private InputStream generateSupportedHttpVersionTestCase() {
+        String rawData = "GET / HTTP/1.2\r\n" + "Host: localhost:8080\r\n"
                 + "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\n"
                 + "Cache-Control: max-age=0\r\n" + "\r\n";
 

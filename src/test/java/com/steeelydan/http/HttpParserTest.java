@@ -42,7 +42,7 @@ public class HttpParserTest {
             httpParser.parseHttpRequest(generateInvalidGETTestCase());
             fail();
         } catch (HttpParsingException e) {
-            assertEquals(e.getErrorCode(), HttpStatusCode.SERVER_ERROR_501_NOT_IMPLEMENTED);
+            assertEquals(HttpStatusCode.SERVER_ERROR_501_NOT_IMPLEMENTED, e.getErrorCode());
         }
     }
 
@@ -52,7 +52,7 @@ public class HttpParserTest {
             httpParser.parseHttpRequest(generateTooLongMethodGETTestCase());
             fail();
         } catch (HttpParsingException e) {
-            assertEquals(e.getErrorCode(), HttpStatusCode.SERVER_ERROR_501_NOT_IMPLEMENTED);
+            assertEquals(HttpStatusCode.SERVER_ERROR_501_NOT_IMPLEMENTED, e.getErrorCode());
         }
     }
 
@@ -63,7 +63,7 @@ public class HttpParserTest {
             fail();
         } catch (HttpParsingException e) {
             e.printStackTrace();
-            assertEquals(e.getErrorCode(), HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
+            assertEquals(HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST, e.getErrorCode());
         }
     }
 
@@ -74,7 +74,7 @@ public class HttpParserTest {
             fail();
         } catch (HttpParsingException e) {
             e.printStackTrace();
-            assertEquals(e.getErrorCode(), HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
+            assertEquals(HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST, e.getErrorCode());
         }
     }
 
@@ -84,8 +84,28 @@ public class HttpParserTest {
             httpParser.parseHttpRequest(generateNoLineFeedGETTestCase());
             fail();
         } catch (HttpParsingException e) {
-            e.printStackTrace();
-            assertEquals(e.getErrorCode(), HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
+            assertEquals(HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST, e.getErrorCode());
+        }
+    }
+
+    @Test
+    void parseHttpRequestBadHttpVersion() {
+        try {
+            httpParser.parseHttpRequest(generateBadHttpVersion());
+            fail();
+        } catch (HttpParsingException e) {
+            assertEquals(HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST, e.getErrorCode());
+        }
+    }
+
+
+    @Test
+    void parseHttpRequestUnsupportedHttpVersion() {
+        try {
+            httpParser.parseHttpRequest(generateUnsupportedHttpVersion());
+            fail();
+        } catch (HttpParsingException e) {
+            assertEquals(HttpStatusCode.SERVER_ERROR_505_HTTP_VERSION_NOT_SUPPORTED, e.getErrorCode());
         }
     }
 
@@ -145,6 +165,26 @@ public class HttpParserTest {
 
     private InputStream generateNoLineFeedGETTestCase() {
         String rawData = "GET / HTTP/1.1\r" + "Host: localhost:8080\r\n"
+                + "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\n"
+                + "Cache-Control: max-age=0\r\n" + "\r\n";
+
+        InputStream inputStream = new ByteArrayInputStream(rawData.getBytes(StandardCharsets.US_ASCII));
+
+        return inputStream;
+    }
+
+    private InputStream generateBadHttpVersion() {
+        String rawData = "GET / HTP/7.1\r\n" + "Host: localhost:8080\r\n"
+                + "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\n"
+                + "Cache-Control: max-age=0\r\n" + "\r\n";
+
+        InputStream inputStream = new ByteArrayInputStream(rawData.getBytes(StandardCharsets.US_ASCII));
+
+        return inputStream;
+    }
+
+    private InputStream generateUnsupportedHttpVersion() {
+        String rawData = "GET / HTTP/2.1\r\n" + "Host: localhost:8080\r\n"
                 + "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\n"
                 + "Cache-Control: max-age=0\r\n" + "\r\n";
 

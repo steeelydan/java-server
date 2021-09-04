@@ -18,7 +18,7 @@ public class HttpVersionTest {
         }
 
         assertNotNull(version);
-        assertEquals(version, HttpVersion.HTTP_1_1);
+        assertEquals(HttpVersion.HTTP_1_1, version);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class HttpVersionTest {
         try {
             version = HttpVersion.getBestCompatibleVersion("HTTP/1.2");
             assertNotNull(version);
-            assertEquals(version, HttpVersion.HTTP_1_1);
+            assertEquals(HttpVersion.HTTP_1_1, version);
         } catch (BadHttpVersionException e) {
             fail();
         }

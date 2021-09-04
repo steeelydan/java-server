@@ -1,6 +1,7 @@
 package com.steeelydan.http;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
@@ -24,23 +25,25 @@ public class HttpParserTest {
     @Test
     void parseHttpRequest() {
         HttpRequest request;
-		try {
-			request = httpParser.parseHttpRequest(generateValidGETTestCase());
+        try {
+            request = httpParser.parseHttpRequest(generateValidGETTestCase());
+            assertNotNull(request);
             assertEquals(request.getMethod(), HttpMethod.GET);
-		} catch (HttpParsingException e) {
-			fail();
-		}
+            assertEquals(request.getRequestTarget(), "/");
+        } catch (HttpParsingException e) {
+            fail();
+        }
 
     }
 
     @Test
     void parseHttpRequestBadMethod() {
         try {
-			httpParser.parseHttpRequest(generateInvalidGETTestCase());
-			fail();
-		} catch (HttpParsingException e) {
+            httpParser.parseHttpRequest(generateInvalidGETTestCase());
+            fail();
+        } catch (HttpParsingException e) {
             assertEquals(e.getErrorCode(), HttpStatusCode.SERVER_ERROR_501_NOT_IMPLEMENTED);
-		}
+        }
     }
 
     @Test

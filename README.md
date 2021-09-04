@@ -12,3 +12,4 @@ https://www.youtube.com/playlist?list=PLAuGQNR28pW56GigraPdiI0oKwcs8gglW
 Run app: `./gradlew run`
 
 Test: `./gradlew test`
+Test single class: `./gradlew test --tests HttpVersionTest`

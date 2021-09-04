@@ -53,6 +53,8 @@ public class HttpParser {
                     }
 
                     return;
+                } else {
+                    throw new HttpParsingException(HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
                 }
             }
 
